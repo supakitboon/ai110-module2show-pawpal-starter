@@ -41,3 +41,63 @@ pip install -r requirements.txt
 5. Add tests to verify key behaviors.
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
+
+## System Design
+
+### Core Objects
+
+**`Owner`** — the person using the app
+- Attributes: `name`
+- Methods: `get_info()`
+
+**`Pet`** — the animal being cared for
+- Attributes: `name`, `species`
+- Methods: `get_info()`
+
+**`Task`** — a single care activity
+- Attributes: `title`, `duration` (minutes), `priority` (`"low"`, `"medium"`, `"high"`)
+- Methods: `priority_value()` — converts priority to a number for sorting
+
+**`Scheduler`** — builds the daily plan
+- Attributes: `owner`, `tasks`
+- Methods: `add_task()`, `generate_schedule()`, `explain_schedule()`
+
+### Three Core User Actions
+1. **Add a Pet** — enter owner name, pet name, and species
+2. **Add a Task** — enter task title, duration, and priority
+3. **Generate Today's Schedule** — produce an ordered plan with explanation
+
+### Class Diagram
+
+```mermaid
+classDiagram
+    class Owner {
+        +String name
+        +get_info() String
+    }
+
+    class Pet {
+        +String name
+        +String species
+        +get_info() String
+    }
+
+    class Task {
+        +String title
+        +int duration
+        +String priority
+        +priority_value() int
+    }
+
+    class Scheduler {
+        +Owner owner
+        +List~Task~ tasks
+        +add_task(task) void
+        +generate_schedule() List~Task~
+        +explain_schedule() String
+    }
+
+    Owner "1" --> "1..*" Pet : has
+    Scheduler "1" --> "1" Owner : uses
+    Scheduler "1" --> "many" Task : manages
+```
