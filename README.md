@@ -102,6 +102,30 @@ classDiagram
     Scheduler "1" --> "many" Task : manages
 ```
 
+## Testing PawPal+
+
+Run the full test suite from the project root:
+
+```bash
+python -m pytest
+```
+
+Add `-v` for verbose output showing each test name:
+
+```bash
+python -m pytest -v
+```
+
+### What the tests cover
+
+| Category | Tests | Description |
+|----------|-------|-------------|
+| **Sorting correctness** | 3 | Verifies `sort_by_time()` returns tasks shortest-first, and `generate_schedule()` orders by priority descending with duration as a tiebreaker |
+| **Recurrence logic** | 5 | Confirms daily tasks recur the next day, weekly tasks recur 7 days later, `as-needed` tasks return `None`, and `Pet.complete_task()` correctly appends (or does not append) the next occurrence |
+| **Conflict / budget detection** | 5 | Verifies the scheduler drops tasks that exceed the remaining time budget, handles a 0-minute budget, schedules a task that exactly fills the budget, and produces an empty schedule when all tasks are already complete |
+
+Tests live in `tests/test_pawpal.py` and are configured via `pytest.ini` so `python -m pytest` works from any directory in the project.
+
 ## Smarter Scheduling
 
 The scheduler goes beyond a simple ordered list. Four algorithmic improvements make it more useful for real pet care:
