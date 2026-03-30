@@ -4,13 +4,24 @@
 
 **a. Initial design**
 
-- Briefly describe your initial UML design.
-- What classes did you include, and what responsibilities did you assign to each?
+The initial design included four classes: `Pet`, `Owner`, `Task`, and `Scheduler`.
+
+- **`Pet`** holds the animal's name and species. Its only responsibility is to store and return basic pet information. It is a pure data object with no scheduling logic.
+- **`Owner`** holds the owner's name and a list of their pets. It is responsible for grouping pet ownership — one owner can have one or more pets.
+- **`Task`** represents a single care activity (e.g., walk, feed, groom). It stores the task title, duration in minutes, and a priority level (`"low"`, `"medium"`, or `"high"`). It is responsible for converting its priority label into a numeric value to support sorting.
+- **`Scheduler`** is the only class with real behavior. It holds a reference to the owner and a list of tasks. It is responsible for accepting new tasks, ordering them by priority, fitting them within available time, and producing a human-readable explanation of the resulting plan.
+
+`Pet` and `Task` were implemented as Python dataclasses to keep attribute definitions clean and concise. `Owner` was also a dataclass since it is primarily a data container. `Scheduler` was a regular class because it manages state and coordinates behavior across the other objects.
 
 **b. Design changes**
 
-- Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+After reviewing the skeleton, two problems were identified and fixed:
+
+**1. Added `available_minutes` to `Scheduler`**
+The original skeleton had no way to track how much time the owner has in a day. Without this, `generate_schedule()` could not enforce any time constraint — it would just return all tasks regardless of whether they fit. Adding `available_minutes` (defaulting to 480, i.e. 8 hours) gives the scheduler the budget it needs to skip or stop adding tasks when time runs out.
+
+**2. Changed `priority: str` to `priority: Literal["low", "medium", "high"]`**
+The original type hint allowed any string, meaning a typo like `"hig"` or an invalid value like `"urgent"` would pass silently and break sorting logic later. Using `Literal` from Python's `typing` module documents the valid values directly in the type signature and lets static analysis tools (like Pylance/mypy) catch mistakes early.
 
 ---
 
