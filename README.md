@@ -101,3 +101,15 @@ classDiagram
     Scheduler "1" --> "1" Owner : uses
     Scheduler "1" --> "many" Task : manages
 ```
+
+## Smarter Scheduling
+
+The scheduler goes beyond a simple ordered list. Four algorithmic improvements make it more useful for real pet care:
+
+**Priority + duration tiebreaker** — Tasks are sorted by priority first (high before medium before low). When two tasks share the same priority, the shorter one is scheduled first, fitting more tasks into the available time window.
+
+**Sorting and filtering** — `Scheduler.sort_by_time()` returns tasks ordered by duration. `filter_by_status()` separates pending from completed tasks. `filter_by_pet()` isolates tasks for a specific pet by name.
+
+**Recurring tasks** — Each `Task` has a `frequency` (`"daily"`, `"weekly"`, `"as-needed"`) and a `due_date`. Calling `Pet.complete_task()` marks the task done and automatically queues a new instance with the next due date using Python's `timedelta` — one day ahead for daily tasks, one week ahead for weekly. Tasks marked `"as-needed"` do not recur.
+
+**Dropped task reporting** — `Scheduler.get_dropped_tasks()` returns any pending tasks that were evaluated but could not fit within the available time budget, so the owner knows what was skipped rather than silently losing it.

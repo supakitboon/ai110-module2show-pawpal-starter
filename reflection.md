@@ -34,8 +34,11 @@ The original type hint allowed any string, meaning a typo like `"hig"` or an inv
 
 **b. Tradeoffs**
 
-- Describe one tradeoff your scheduler makes.
-- Why is that tradeoff reasonable for this scenario?
+The scheduler uses a **greedy fit** approach: it walks through tasks sorted by priority and adds each one if its duration fits within the remaining time budget. If a task doesn't fit, it is skipped entirely — the scheduler does not try to rearrange earlier tasks or look ahead to find a better combination.
+
+For example, if 15 minutes remain and there is a 20-minute low-priority task and a 10-minute low-priority task further down the list, the greedy approach skips the 20-minute task but may still pick up the 10-minute one. It does not backtrack to swap earlier choices for a more optimal total.
+
+This is a reasonable tradeoff for a pet care app because the task list is small (typically under 10 items), simplicity matters more than perfect optimization, and the priority ordering is already the owner's stated preference. A full optimal packing algorithm (like 0/1 knapsack) would be more powerful but far harder to explain to a non-technical user.
 
 ---
 
