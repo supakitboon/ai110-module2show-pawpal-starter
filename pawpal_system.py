@@ -77,10 +77,7 @@ class Scheduler:
         self.available_minutes = available_minutes  # default: 8 hours
 
     def generate_schedule(self) -> List[Task]:
-        """
-        Retrieve all pending tasks from the owner's pets, sort by priority
-        (highest first), and return those that fit within available_minutes.
-        """
+        """Sort all pending tasks by priority and return those that fit within available_minutes."""
         pending = self.owner.get_all_pending_tasks()
         sorted_tasks = sorted(pending, key=lambda t: t.priority_value(), reverse=True)
 
